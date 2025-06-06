@@ -20,6 +20,6 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
 
 WORKDIR /app
 COPY package.json /app
-# RUN npm install
+RUN npm install
 COPY . /app
 CMD ["node","http/server.mjs"]
