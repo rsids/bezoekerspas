@@ -1,12 +1,16 @@
 import {Browser, Builder, By, until} from "selenium-webdriver";
+import {Options} from "selenium-webdriver/chrome.js";
 
 
 export const getBrowser = async () => {
     try {
-        const d = await new Builder().forBrowser(Browser.CHROME).build();
+        const d = await new Builder().forBrowser(Browser.CHROME)
+            .setChromeOptions((new Options()).addArguments('--headless=new'))
+            .build();
         await d.get('https://aanvraagparkeren.groningen.nl/DVSPortal/BezoekersApp/www/#/');
         return d;
     } catch (e) {
+        console.error(e);
         return false
     }
 
