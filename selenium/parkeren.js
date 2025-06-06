@@ -47,7 +47,6 @@ const afmelden = async function (licenseplate) {
 
 const aangemeldeKentekens = async function () {
     try {
-
         await clickMenuItem('Actief');
     } catch (e) {
         // menu item not found, no active reservations

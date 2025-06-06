@@ -17,9 +17,18 @@ export const login = async function (username, password) {
     let usernameInput = await driver.findElement(By.id('txtIdentifier'));
     let passwordInput = await driver.findElement(By.id('txtPincode'));
     let button = await driver.findElement(By.id('btnLogin'));
+    await usernameInput.clear();
+    await passwordInput.clear();
     await usernameInput.sendKeys(username);
-    await passwordInput.sendKeys(password)
+    await passwordInput.sendKeys(password);
     await button.click();
+    try {
+        const err = await locate(By.css('.has-error'));
+        return false;
+    } catch (e) {
+
+    }
+    return true;
 }
 
 export const logout =async function () {
@@ -27,12 +36,13 @@ export const logout =async function () {
         await clickMenuItem('Uitloggen');
     } catch (e) {
         // failed to logout
+        console.log('failed to logout 1')
     }
     try {
-
         await driver.wait(until.titleIs('Login'), 1000);
     } catch (e) {
         // something is really wrong
+        console.log('failed to logout 2')
     }
 
 }
@@ -45,7 +55,7 @@ export const quit = async function () {
 export async function clickMenuItem(menuItem) {
     let hamburger = await locate(By.css('.btn.btn-menu'));
     await hamburger.click();
-    await driver.wait(until.elementLocated(By.id('mainMenu')), 5000);
+    await locate(By.id('mainMenu'));
     const menuItems = await driver.findElements(By.css('.main-menu-item'))
     for (let element of menuItems) {
         if (await element.getText() === menuItem) {
@@ -57,9 +67,9 @@ export async function clickMenuItem(menuItem) {
 }
 
 export async function locate(locator) {
-    await driver.wait(until.elementLocated(locator), 5000);
+    await driver.wait(until.elementLocated(locator), 3000);
     let element = await driver.findElement(locator);
-    await driver.wait(until.elementIsVisible(element), 5000);
+    await driver.wait(until.elementIsVisible(element), 3000);
     return element;
 }
 
