@@ -22,8 +22,45 @@ export const login = async function (username, password) {
     await button.click();
 }
 
+export const logout =async function () {
+    try {
+        await clickMenuItem('Uitloggen');
+    } catch (e) {
+        // failed to logout
+    }
+    try {
+
+        await driver.wait(until.titleIs('Login'), 1000);
+    } catch (e) {
+        // something is really wrong
+    }
+
+}
+
 export const quit = async function () {
     driver.quit();
+}
+
+
+export async function clickMenuItem(menuItem) {
+    let hamburger = await locate(By.css('.btn.btn-menu'));
+    await hamburger.click();
+    await driver.wait(until.elementLocated(By.id('mainMenu')), 5000);
+    const menuItems = await driver.findElements(By.css('.main-menu-item'))
+    for (let element of menuItems) {
+        if (await element.getText() === menuItem) {
+            await element.click();
+            return;
+        }
+    }
+    throw new Error('menu item not found');
+}
+
+export async function locate(locator) {
+    await driver.wait(until.elementLocated(locator), 5000);
+    let element = await driver.findElement(locator);
+    await driver.wait(until.elementIsVisible(element), 5000);
+    return element;
 }
 
 export const driver = await getBrowser();

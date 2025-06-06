@@ -3,7 +3,7 @@ import http from 'http';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {aangemeldeKentekens, aanmelden} from "../selenium/parkeren.js";
-import {login} from "../selenium/setup.mjs";
+import {login, logout} from "../selenium/setup.mjs";
 
 
 // Get the directory name for ES modules
@@ -24,6 +24,7 @@ app.post('/isAangemeld', async (req, res) => {
     console.log({username, password, licenseplate});
     await login(username, password);
     const result = await aangemeldeKentekens();
+    await logout();
     return res.status(200).json({
         isAangemeld: result.includes(licenseplate)
     });
@@ -40,8 +41,9 @@ app.post('/isAangemeld', async (req, res) => {
 app.post('/aanmelden', async (req, res) => {
     const {username, password, licenseplate} = req.body;
     await login(username, password);
-     await aanmelden(licenseplate);
+    await aanmelden(licenseplate);
     const result = await aangemeldeKentekens();
+    await logout();
     if (result) {
         return res.status(200).json({
             aangemeldeKentekens: result
@@ -56,6 +58,7 @@ app.post('/afmelden', async (req, res) => {
     await login(username, password);
     await aanmelden(licenseplate);
     const result = await aangemeldeKentekens();
+    await logout();
     if (result) {
         return res.status(200).json({
             aangemeldeKentekens: result
