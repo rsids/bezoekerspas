@@ -4,8 +4,13 @@ import {Options} from "selenium-webdriver/chrome.js";
 
 export const getBrowser = async () => {
     try {
+        const options = new Options();
+        options.addArguments("--profile-directory=Profile 6");
+        options.addArguments("--no-sandbox")
+        options.addArguments('--user-data-dir=/app/userdata')
+        options.addArguments('--headless=new')
         const d = await new Builder().forBrowser(Browser.CHROME)
-            .setChromeOptions((new Options()).addArguments('--headless=new'))
+            .setChromeOptions(options)
             .build();
         await d.get('https://aanvraagparkeren.groningen.nl/DVSPortal/BezoekersApp/www/#/');
         return d;
@@ -35,7 +40,7 @@ export const login = async function (username, password) {
     return true;
 }
 
-export const logout =async function () {
+export const logout = async function () {
     try {
         await clickMenuItem('Uitloggen');
     } catch (e) {
