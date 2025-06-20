@@ -5,10 +5,10 @@ import {Options} from "selenium-webdriver/chrome.js";
 export const getBrowser = async () => {
     try {
         const options = new Options();
-        // options.addArguments("--profile-directory=Profile 6");
-        // options.addArguments("--no-sandbox")
-        // options.addArguments('--user-data-dir=/app/userdata')
-        // options.addArguments('--headless=new')
+        options.addArguments("--profile-directory=Profile 6");
+        options.addArguments("--no-sandbox")
+        options.addArguments('--user-data-dir=/app/userdata')
+        options.addArguments('--headless=new')
         const d = await new Builder().forBrowser(Browser.CHROME)
             .setChromeOptions(options)
             .build();
