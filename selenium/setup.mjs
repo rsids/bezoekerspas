@@ -5,10 +5,10 @@ import {Options} from "selenium-webdriver/chrome.js";
 export const getBrowser = async () => {
     try {
         const options = new Options();
-        options.addArguments("--profile-directory=Profile 6");
-        options.addArguments("--no-sandbox")
-        options.addArguments('--user-data-dir=/app/userdata')
-        options.addArguments('--headless=new')
+        // options.addArguments("--profile-directory=Profile 6");
+        // options.addArguments("--no-sandbox")
+        // options.addArguments('--user-data-dir=/app/userdata')
+        // options.addArguments('--headless=new')
         const d = await new Builder().forBrowser(Browser.CHROME)
             .setChromeOptions(options)
             .build();
@@ -45,13 +45,13 @@ export const logout = async function () {
         await clickMenuItem('Uitloggen');
     } catch (e) {
         // failed to logout
-        console.log('failed to logout 1')
+        console.log('failed to logout 1', e)
     }
     try {
         await driver.wait(until.titleIs('Login'), 1000);
     } catch (e) {
         // something is really wrong
-        console.log('failed to logout 2')
+        console.log('failed to logout 2', e)
     }
 
 }
@@ -63,7 +63,12 @@ export const quit = async function () {
 
 export async function clickMenuItem(menuItem) {
     let hamburger = await locate(By.css('.btn.btn-menu'));
-    await hamburger.click();
+    try {
+        await(locate(By.css('.main-content-open')))
+        console.log('Menu already open')
+    } catch (e) {
+        await hamburger.click();
+    }
     await locate(By.id('mainMenu'));
     const menuItems = await driver.findElements(By.css('.main-menu-item'))
     for (let element of menuItems) {
