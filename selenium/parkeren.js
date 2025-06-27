@@ -1,5 +1,6 @@
 import {By, until} from "selenium-webdriver";
-import {clickMenuItem, driver, locate} from "./setup.mjs";
+import {clickMenuItem, locate} from "./setup.mjs";
+import {getDriver} from "./setup.mjs";
 
 const aanmelden = async function (licenseplate) {
     try {
@@ -7,10 +8,10 @@ const aanmelden = async function (licenseplate) {
     } catch (e) {
         return;
     }
-    await driver.wait(until.titleIs('Kenteken aanmelden'), 1000);
-    await driver.wait(until.elementLocated(By.id('txtLicenseplate')), 5000);
-    let licenseplateInput = await driver.findElement(By.id('txtLicenseplate'));
-    let submit = await driver.findElement(By.id('btnStartReservation'));
+    await getDriver().wait(until.titleIs('Kenteken aanmelden'), 1000);
+    await getDriver().wait(until.elementLocated(By.id('txtLicenseplate')), 2000);
+    let licenseplateInput = await getDriver().findElement(By.id('txtLicenseplate'));
+    let submit = await getDriver().findElement(By.id('btnStartReservation'));
     await licenseplateInput.sendKeys(licenseplate);
     await submit.click();
     const licensePlateBig = await locate(By.css('.licensePlateBig'));
@@ -33,7 +34,7 @@ const afmelden = async function (licenseplate) {
     if (await title.getText() === 'Actieve reservering') {
         await _afmelden(licenseplate);
     } else {
-        const licensePlateElements = await driver.findElements(By.css('#view table tbody tr td:first-child'))
+        const licensePlateElements = await getDriver().findElements(By.css('#view table tbody tr td:first-child'))
         for (let element of licensePlateElements) {
             if (await element.getText() === licenseplate) {
                 await element.click();
@@ -58,7 +59,7 @@ const aangemeldeKentekens = async function () {
         const licensePlateBig = await locate(By.css('.licensePlateBig'));
         return [await licensePlateBig.getText()];
     } else if (await title.getText() === 'Actieve reserveringen') {
-        const licensePlateElements = await driver.findElements(By.css('#view table tbody tr td:first-child'))
+        const licensePlateElements = await getDriver().findElements(By.css('#view table tbody tr td:first-child'))
         const plates = []
         for (let element of licensePlateElements) {
             plates.push(await element.getText());

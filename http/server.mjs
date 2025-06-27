@@ -3,7 +3,7 @@ import http from 'http';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {aangemeldeKentekens, aanmelden, afmelden} from "../selenium/parkeren.js";
-import {login, logout} from "../selenium/setup.mjs";
+import {getDriver, login} from "../selenium/setup.mjs";
 
 
 // Get the directory name for ES modules
@@ -19,7 +19,9 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(async (req, res, next) => {
     const {username, password, licenseplate} = req.body;
+    console.log(req.url)
     if (!username || !password || !licenseplate) {
+        console.log('Missing required fields. Username, password and licenseplate are required.')
         return res.status(400).json({
             error: 'Missing required fields. Username, password and licenseplate are required.'
         });
@@ -30,16 +32,20 @@ app.use(async (req, res, next) => {
             error: 'Invalid username or password'
         });
     }
+
+    await getDriver().navigate().refresh();
+    res.setHeader('Content-Type', 'application/json');
+    res.set("Connection", "close");
+
     next();
 })
 
 app.post('/isAangemeld', async (req, res) => {
     const {licenseplate} = req.body;
     const result = await aangemeldeKentekens();
-    await logout();
-    return res.status(200).json({
+    return res.status(200).send(JSON.stringify({
         isAangemeld: result.includes(licenseplate)
-    });
+    }));
 
 });
 
@@ -47,10 +53,9 @@ app.post('/aanmelden', async (req, res) => {
     const {licenseplate} = req.body;
     await aanmelden(licenseplate);
     const result = await aangemeldeKentekens();
-    await logout();
     if (result) {
         return res.status(200).json({
-            aangemeldeKentekens: result
+            isAangemeld: result.includes(licenseplate)
         });
     }
     return res.status(403).send();
@@ -63,7 +68,6 @@ app.post('/afmelden', async (req, res) => {
     try {
         await afmelden(licenseplate);
     } catch (e) {
-        await logout();
         // licenseplate not found
         return res.status(404).send();
     }
