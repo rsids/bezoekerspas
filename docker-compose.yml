@@ -3,5 +3,5 @@ services:
     build: .
     container_name: bezoekerspas
     ports:
-      - "3030:3000"
-#    restart: always
+      - "8002:3000"
+    restart: always
