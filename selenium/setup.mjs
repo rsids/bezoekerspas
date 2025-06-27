@@ -38,6 +38,7 @@ export const login = async function (username, password) {
     try {
         await getDriver().wait(until.titleIs('Login'), 1000);
     } catch (e) {
+        console.log('actual title', await getDriver().getTitle());
         await logout();
     }
     await getDriver().wait(until.elementLocated(By.id('txtIdentifier')), 5000);
@@ -104,7 +105,7 @@ export const getDriver = () => {
     return driver;
 }
 
-async function restart() {
+export async function restart() {
     try {
         await driver.quit();
     } catch (e) {

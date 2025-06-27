@@ -3,7 +3,7 @@ import http from 'http';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {aangemeldeKentekens, aanmelden, afmelden} from "../selenium/parkeren.js";
-import {getDriver, login} from "../selenium/setup.mjs";
+import {getDriver, login, restart} from "../selenium/setup.mjs";
 
 
 // Get the directory name for ES modules
@@ -26,10 +26,19 @@ app.use(async (req, res, next) => {
             error: 'Missing required fields. Username, password and licenseplate are required.'
         });
     }
-    const loggedIn = await login(username, password);
-    if (!loggedIn) {
-        return res.status(401).json({
-            error: 'Invalid username or password'
+    try {
+
+        const loggedIn = await login(username, password);
+        if (!loggedIn) {
+            return res.status(401).json({
+                error: 'Invalid username or password'
+            });
+        }
+    } catch (e) {
+        console.log('Failed to login. 500', e)
+        restart();
+        return res.status(500).json({
+            error: 'Internal server error'
         });
     }
 
