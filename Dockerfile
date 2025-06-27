@@ -1,5 +1,5 @@
 # 1) Use alpine-based NodeJS base image. We lock to specific version rather than `latest` to ensure stability.
-FROM --platform=linux/amd64 node:latest
+FROM --platform=linux/amd64 node:20
 
 # 2) Install Chrome and the stable Chromedriver version that corresponds to the installed major Chrome version.
 #    Sometimes, the installed Chrome version is newer. If need be, hard-code the latest stable version: https://googlechromelabs.github.io/chrome-for-testing
