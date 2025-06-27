@@ -36,6 +36,7 @@ export const login = async function (username, password) {
         console.log('Failed to check if already logged in',e)
     }
     try {
+        console.log('current title', await getDriver().getTitle());
         await getDriver().wait(until.titleIs('Login'), 1000);
     } catch (e) {
         console.log('actual title', await getDriver().getTitle());
